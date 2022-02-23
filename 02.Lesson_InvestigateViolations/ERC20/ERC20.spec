@@ -63,16 +63,16 @@ rule balanceChangesFromCertainFunctions(method f, address user){
 //@note : Arbitrary user balance doesn't correspond to actual state transitions in the contract
 // In the contract, user balance of x is not possible when burn y succeeds and totalSupply < x+y
 rule totalSupplyNotLessThanSingleUserBalance_exceptBurn(method f, address user) {
-	env e;
+	require(f.selector != burn(address, uint256).selector);
+    env e;
 	calldataarg args;
 	uint256 totalSupplyBefore = totalSupply(e);
     uint256 userBalanceBefore = balanceOf(e, user);
     f(e, args);
     uint256 totalSupplyAfter = totalSupply(e);
     uint256 userBalanceAfter = balanceOf(e, user);
-	assert (totalSupplyBefore >= userBalanceBefore => 
-            totalSupplyAfter >= userBalanceAfter &&
-            f.selector != burn(address, uint256).selector),
+	assert ((totalSupplyBefore >= userBalanceBefore => 
+            totalSupplyAfter >= userBalanceAfter)),
         "a user's balance is exceeding the total supply of token";
 }
 
