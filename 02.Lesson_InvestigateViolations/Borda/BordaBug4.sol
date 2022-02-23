@@ -92,7 +92,8 @@ contract Borda is IBorda {
         voteTo(second, 2);
         voteTo(third, 1);
 
-        _voters[msg.sender].registered = false;
+        //@note : unregistering a user will allow them to vote again
+        //Completely spurious condition, hence removed
         return true;
     }
 
