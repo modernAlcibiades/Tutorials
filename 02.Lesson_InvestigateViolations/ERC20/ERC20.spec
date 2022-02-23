@@ -60,7 +60,9 @@ rule balanceChangesFromCertainFunctions(method f, address user){
 // Checks that the totalSupply of the token is at least equal to a single user's balance
 // This rule breaks also on a fixed version of ERC20 -
 // why? understand the infeasible state that the rule start with 
-rule totalSupplyNotLessThanSingleUserBalance(method f, address user) {
+//@note : Arbitrary user balance doesn't correspond to actual state transitions in the contract
+// In the contract, user balance of x is not possible when burn y succeeds and totalSupply < x+y
+rule totalSupplyNotLessThanSingleUserBalance_exceptBurn(method f, address user) {
 	env e;
 	calldataarg args;
 	uint256 totalSupplyBefore = totalSupply(e);
@@ -68,7 +70,24 @@ rule totalSupplyNotLessThanSingleUserBalance(method f, address user) {
     f(e, args);
     uint256 totalSupplyAfter = totalSupply(e);
     uint256 userBalanceAfter = balanceOf(e, user);
-	assert totalSupplyBefore >= userBalanceBefore => 
-            totalSupplyAfter >= userBalanceAfter,
+	assert (totalSupplyBefore >= userBalanceBefore => 
+            totalSupplyAfter >= userBalanceAfter &&
+            f.selector != burn(address, uint256).selector),
         "a user's balance is exceeding the total supply of token";
+}
+
+rule totalSupplyNotLessThanSingleUserBalance_Burn(method f, address user) {
+	env e;
+	uint256 amount;
+    address account;
+	uint256 totalSupplyBefore = totalSupply(e);
+    uint256 userBalanceBefore = balanceOf(e, user);
+    uint256 accountBalanceBefore = balanceOf(e, account);
+    burn(e, account, amount);
+    uint256 totalSupplyAfter = totalSupply(e);
+    uint256 userBalanceAfter = balanceOf(e, user);
+    uint256 accountBalanceAfter = balanceOf(e, account);
+	assert (totalSupplyBefore >= accountBalanceBefore + userBalanceBefore => 
+            totalSupplyAfter >= accountBalanceAfter + userBalanceAfter),
+        "a user's balance is exceeding the total supply of token after burn";
 }
