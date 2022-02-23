@@ -1,5 +1,10 @@
-solc-select use $1
+solc-select use 0.7.6
 
-certoraRun BordaBug4.sol:Borda --verify Borda:Borda.spec \
+for N in 1 2 3 4
+do
+echo BordaBug${N}.sol
+certoraRun BordaBug${N}.sol:Borda \
+--verify Borda:Borda.spec \
 --send_only \
---msg "$2"
+--msg "BordaBug${N}_fixed"
+done
