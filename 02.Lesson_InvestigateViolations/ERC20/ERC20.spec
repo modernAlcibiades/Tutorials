@@ -61,7 +61,7 @@ rule balanceChangesFromCertainFunctions(method f, address user){
 // This rule breaks also on a fixed version of ERC20 -
 // why? understand the infeasible state that the rule start with 
 //@note : Arbitrary user balance doesn't correspond to actual state transitions in the contract
-// In the contract, user balance of x is not possible when burn y succeeds and totalSupply < x+y
+// E.g - user balance of x is not possible when burn y succeeds and totalSupply < x+y
 rule totalSupplyNotLessThanSingleUserBalanceExceptCertainFunctions(method f, address user) {
 	require(!(f.selector == transfer(address, uint256).selector ||
          f.selector == transferFrom(address, address, uint256).selector ||
@@ -74,27 +74,72 @@ rule totalSupplyNotLessThanSingleUserBalanceExceptCertainFunctions(method f, add
     f(e, args);
     uint256 totalSupplyAfter = totalSupply(e);
     uint256 userBalanceAfter = balanceOf(e, user);
-	assert ((totalSupplyBefore >= userBalanceBefore => 
-            totalSupplyAfter >= userBalanceAfter)),
+	assert totalSupplyBefore >= userBalanceBefore => 
+            totalSupplyAfter >= userBalanceAfter,
         "a user's balance is exceeding the total supply of token";
 }
 
-rule totalSupplyNotLessThanSingleUserBalanceFromCertainFunctions(method f, address user) {
-    require(f.selector == transfer(address, uint256).selector ||
-        f.selector == transferFrom(address, address, uint256).selector ||
-        f.selector == mint(address, uint256).selector ||
-        f.selector == burn(address, uint256).selector);
+rule totalSupplyNotLessThanSingleUserBalanceTransfer(method f, address user) {
     env e;
-    calldataarg args;
-    address account;
+	address recipient;
+    uint256 amount;
+    require(user != e.msg.sender && user != recipient);
 	uint256 totalSupplyBefore = totalSupply(e);
     uint256 userBalanceBefore = balanceOf(e, user);
-    uint256 accountBalanceBefore = balanceOf(e, account);
-    f(e, account, args);
+    transfer(e, recipient, amount);
     uint256 totalSupplyAfter = totalSupply(e);
     uint256 userBalanceAfter = balanceOf(e, user);
-    uint256 accountBalanceAfter = balanceOf(e, account);
-	assert (totalSupplyBefore >= accountBalanceBefore + userBalanceBefore => 
-            totalSupplyAfter >= accountBalanceAfter + userBalanceAfter),
-        "a user's balance is exceeding the total supply of token after burn";
+	assert totalSupplyBefore >= userBalanceBefore => 
+            totalSupplyAfter >= userBalanceAfter,
+        "a user's balance is exceeding the total supply of token";
+}
+
+rule totalSupplyNotLessThanSingleUserBalanceTransferFrom(method f, address user) {
+    env e;
+    address sender;
+	address recipient;
+    uint256 amount;
+    require(user != sender && user != recipient);
+	uint256 totalSupplyBefore = totalSupply(e);
+    uint256 userBalanceBefore = balanceOf(e, user);
+    transferFrom(e, sender, recipient, amount);
+    uint256 totalSupplyAfter = totalSupply(e);
+    uint256 userBalanceAfter = balanceOf(e, user);
+	assert totalSupplyBefore >= userBalanceBefore => 
+            totalSupplyAfter >= userBalanceAfter,
+        "a user's balance is exceeding the total supply of token";
+}
+
+rule totalSupplyNotLessThanSingleUserBalanceBurn(method f, address user) {
+    env e;
+    address sender;
+    require(user != sender);
+    uint256 amount;
+	uint256 totalSupplyBefore = totalSupply(e);
+    uint256 userBalanceBefore = balanceOf(e, user);
+    uint256 senderBalanceBefore = balanceOf(e, sender);
+    burn(e, sender, amount);
+    uint256 totalSupplyAfter = totalSupply(e);
+    uint256 userBalanceAfter = balanceOf(e, user);
+    uint256 senderBalanceAfter = balanceOf(e, sender);
+	assert totalSupplyBefore >= userBalanceBefore + senderBalanceBefore => 
+            totalSupplyAfter >= userBalanceAfter + senderBalanceAfter,
+        "a user's balance is exceeding the total supply of token";
+}
+
+rule totalSupplyNotLessThanSingleUserBalanceMint(method f, address user) {
+    env e;
+    address recipient;
+    require(user != recipient);
+    uint256 amount;
+	uint256 totalSupplyBefore = totalSupply(e);
+    uint256 userBalanceBefore = balanceOf(e, user);
+    uint256 recipientBalanceBefore = balanceOf(e, recipient);
+    mint(e, recipient, amount);
+    uint256 totalSupplyAfter = totalSupply(e);
+    uint256 userBalanceAfter = balanceOf(e, user);
+    uint256 recipientBalanceAfter = balanceOf(e, recipient);
+	assert totalSupplyBefore >= userBalanceBefore + recipientBalanceBefore => 
+            totalSupplyAfter >= userBalanceAfter + recipientBalanceAfter,
+        "a user's balance is exceeding the total supply of token";
 }
