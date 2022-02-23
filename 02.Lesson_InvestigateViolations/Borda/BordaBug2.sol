@@ -21,8 +21,7 @@ contract Borda is IBorda {
   
     // a list of voters with some data on them.
     mapping (address => Voters) _voters;
-    // voters black list - true if a voter is blacklisted
-    address[] _blackList;
+    //@note : Removed _blacklist array due to redundance vs _voters[i].black_listed
     // a list of contenders and some data on them.
     mapping (address => Contenders) _contenders;
     // current winner
@@ -60,7 +59,8 @@ contract Borda is IBorda {
     }
 
     function registerVoter(uint8 age) external override returns (bool) {
-        require (!_contenders[msg.sender].registered, "you are already registered");
+        //@note : Replaced faulty check on _contenders with _voters mapping
+        require (!_voters[msg.sender].registered, "you are already registered");
         _voters[msg.sender] = Voters({age: age, registered: true, voted: false, vote_attempts: 0, black_listed: false});
         return true;
     }
@@ -81,7 +81,7 @@ contract Borda is IBorda {
         if (voter_details.voted){
            require(voter_details.vote_attempts >= 3, "you've already voted. If you reach 3 attempts you will be black listed");
            if (!voter_details.black_listed){
-                _blackList.push(msg.sender); 
+                //@note : Removed call to _blacklist array in favor of _voters[i].black_listed variable
                 _voters[msg.sender].black_listed = true;
            }
            assert(false);
