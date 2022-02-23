@@ -62,8 +62,11 @@ rule balanceChangesFromCertainFunctions(method f, address user){
 // why? understand the infeasible state that the rule start with 
 //@note : Arbitrary user balance doesn't correspond to actual state transitions in the contract
 // In the contract, user balance of x is not possible when burn y succeeds and totalSupply < x+y
-rule totalSupplyNotLessThanSingleUserBalance_exceptBurn(method f, address user) {
-	require(f.selector != burn(address, uint256).selector);
+rule totalSupplyNotLessThanSingleUserBalanceExceptCertainFunctions(method f, address user) {
+	require(!(f.selector == transfer(address, uint256).selector ||
+         f.selector == transferFrom(address, address, uint256).selector ||
+         f.selector == mint(address, uint256).selector ||
+         f.selector == burn(address, uint256).selector));
     env e;
 	calldataarg args;
 	uint256 totalSupplyBefore = totalSupply(e);
@@ -76,14 +79,18 @@ rule totalSupplyNotLessThanSingleUserBalance_exceptBurn(method f, address user) 
         "a user's balance is exceeding the total supply of token";
 }
 
-rule totalSupplyNotLessThanSingleUserBalance_Burn(method f, address user) {
-	env e;
-	uint256 amount;
+rule totalSupplyNotLessThanSingleUserBalanceFromCertainFunctions(method f, address user) {
+    require(f.selector == transfer(address, uint256).selector ||
+        f.selector == transferFrom(address, address, uint256).selector ||
+        f.selector == mint(address, uint256).selector ||
+        f.selector == burn(address, uint256).selector);
+    env e;
+    calldataarg args;
     address account;
 	uint256 totalSupplyBefore = totalSupply(e);
     uint256 userBalanceBefore = balanceOf(e, user);
     uint256 accountBalanceBefore = balanceOf(e, account);
-    burn(e, account, amount);
+    f(e, account, args);
     uint256 totalSupplyAfter = totalSupply(e);
     uint256 userBalanceAfter = balanceOf(e, user);
     uint256 accountBalanceAfter = balanceOf(e, account);
