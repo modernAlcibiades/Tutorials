@@ -79,11 +79,12 @@ rule checkPendingToCancelledOrStarted(method f, uint256 meetingId) {
 rule monotonousIncreasingNumOfParticipants(method f, uint256 meetingId) {
 	env e;
 	calldataarg args;
-	// @note : One workaround is to exclusively exclude schedule function where numParticipants is initialized
-	require(f.selector != scheduleMeeting(uint256,uint256,uint256).selector);
 	uint256 numOfParticipantsBefore = getNumOfParticipents(e, meetingId);
 	f(e, args);
     uint256 numOfParticipantsAfter = getNumOfParticipents(e, meetingId);
 
-	assert numOfParticipantsBefore <= numOfParticipantsAfter, "the number of participants decreased as a result of a function call";
+	// @note : Stronger condition that excludes arbitrary starting states
+	assert (numOfParticipantsBefore <= numOfParticipantsAfter) || 
+	(f.selector == scheduleMeeting(uint256,uint256,uint256).selector && numOfParticipantsAfter == 0),
+	"the number of participants decreased as a result of a function call";
 }
