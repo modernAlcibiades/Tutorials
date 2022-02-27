@@ -1,13 +1,15 @@
+
+
 function getVoterAge(env e, address voter) returns uint8{
     uint8 age;
     age, _, _, _, _ = getFullVoterDetails(e, voter);
     return age;
 }
 
-function getVoterRegisteredBefore(env e, address voter) returns bool{
-    bool registeredBefore;
-    _, registeredBefore, _, _, _ = getFullVoterDetails(e, voter);
-    return registeredBefore;
+function getVoterRegistered(env e, address voter) returns bool{
+    bool registered;
+    _, registered, _, _, _ = getFullVoterDetails(e, voter);
+    return registered;
 }
 
 function getVoterVoted(env e, address voter) returns bool{
@@ -22,10 +24,10 @@ function getVoterVoteAttempts(env e, address voter) returns uint256{
     return vote_attempts;
 }
 
-function getVoterBlockedBefore(env e, address voter) returns bool{
-    bool blocked_before;
-    _, _, _, _, blocked_before = getFullVoterDetails(e, voter);
-    return blocked_before;
+function getVoterBlocked(env e, address voter) returns bool{
+    bool blocked;
+    _, _, _, _, blocked = getFullVoterDetails(e, voter);
+    return blocked;
 }
 
 // Checks that a voter's "registered" mark is changed correctly - 
@@ -33,11 +35,9 @@ function getVoterBlockedBefore(env e, address voter) returns bool{
 // If it's true after a call, it either started as true or changed from false to true via registerVoter()
 rule registeredCannotChangeOnceSet(method f, address voter){
     env e; calldataarg args;
-    uint256 age; bool voterRegBefore; bool voted; uint256 vote_attempts; bool blocked;
-    age, voterRegBefore, voted, vote_attempts, blocked = getFullVoterDetails(e, voter);
+    bool voterRegBefore = getVoterRegistered(e, voter);
     f(e, args);
-    bool voterRegAfter;
-    age, voterRegAfter, voted, vote_attempts, blocked = getFullVoterDetails(e, voter);
+    bool voterRegAfter = getVoterRegistered(e, voter);
 
     assert (!voterRegAfter => !voterRegBefore, "voter changed state from registered to not registered after a call");
     assert (voterRegAfter => 
@@ -66,12 +66,12 @@ rule correctPointsIncreaseToContenders(address first, address second, address th
 // Checks that a blocked voter cannot get unlisted
 rule onceBlockedNotOut(method f, address voter){
     env e; calldataarg args;
-    uint256 age; bool registeredBefore; bool voted; uint256 vote_attempts; bool blocked_before;
-    age, registeredBefore, voted, vote_attempts, blocked_before = getFullVoterDetails(e, voter);
+    bool registeredBefore = getVoterRegistered(e, voter);
+    bool blocked_before = getVoterBlocked(e, voter);
     require blocked_before => registeredBefore;
     f(e, args);
-    bool registeredAfter; bool blocked_after;
-    age, registeredAfter, voted, vote_attempts, blocked_after = getFullVoterDetails(e, voter);
+
+    bool blocked_after = getVoterBlocked(e, voter);
     
     assert blocked_before => blocked_after, "the specified user got out of the blocked users' list";
 }
