@@ -7,9 +7,9 @@ function getVoterAge(env e, address voter) returns uint8{
 }
 
 function getVoterRegistered(env e, address voter) returns bool{
-    bool registered;
-    _, registered, _, _, _ = getFullVoterDetails(e, voter);
-    return registered;
+    uint256 age; bool voterReg; bool voted; uint256 vote_attempts; bool blocked;
+    age, voterReg, voted, vote_attempts, blocked = getFullVoterDetails(e, voter);
+    return voterReg;
 }
 
 function getVoterVoted(env e, address voter) returns bool{
@@ -20,7 +20,7 @@ function getVoterVoted(env e, address voter) returns bool{
 
 function getVoterVoteAttempts(env e, address voter) returns uint256{
     uint256 vote_attempts;
-    _, _, _, _, _ = getFullVoterDetails(e, voter);
+    _, _, _, vote_attempts, _ = getFullVoterDetails(e, voter);
     return vote_attempts;
 }
 
