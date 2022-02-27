@@ -1,6 +1,36 @@
+function getVoterAge(env e, address voter) returns uint8{
+    uint8 age;
+    age, _, _, _, _ = getFullVoterDetails(e, voter);
+    return age;
+}
+
+function getVoterRegisteredBefore(env e, address voter) returns bool{
+    bool registeredBefore;
+    _, registeredBefore, _, _, _ = getFullVoterDetails(e, voter);
+    return registeredBefore;
+}
+
+function getVoterVoted(env e, address voter) returns bool{
+    bool voted;
+    _, _, voted, _, _ = getFullVoterDetails(e, voter);
+    return voted;
+}
+
+function getVoterVoteAttempts(env e, address voter) returns uint256{
+    uint256 vote_attempts;
+    _, _, _, _, _ = getFullVoterDetails(e, voter);
+    return vote_attempts;
+}
+
+function getVoterBlockedBefore(env e, address voter) returns bool{
+    bool blocked_before;
+    _, _, _, _, blocked_before = getFullVoterDetails(e, voter);
+    return blocked_before;
+}
+
 // Checks that a voter's "registered" mark is changed correctly - 
-// If it's false after a function call, it was false before
-// If it's true after a function call, it either started as true or changed from false to true via registerVoter()
+// If it's false after a call, it was false before
+// If it's true after a call, it either started as true or changed from false to true via registerVoter()
 rule registeredCannotChangeOnceSet(method f, address voter){
     env e; calldataarg args;
     uint256 age; bool voterRegBefore; bool voted; uint256 vote_attempts; bool blocked;
@@ -9,10 +39,10 @@ rule registeredCannotChangeOnceSet(method f, address voter){
     bool voterRegAfter;
     age, voterRegAfter, voted, vote_attempts, blocked = getFullVoterDetails(e, voter);
 
-    assert (!voterRegAfter => !voterRegBefore, "voter changed state from registered to not registered after a function call");
+    assert (!voterRegAfter => !voterRegBefore, "voter changed state from registered to not registered after a call");
     assert (voterRegAfter => 
         ((!voterRegBefore && f.selector == registerVoter(uint8).selector) || voterRegBefore), 
-            "voter was registered from an unregistered state, by other function then registerVoter()");
+            "voter was registered from an unregistered state, by other then registerVoter()");
 }
 
 // Checks that each voted contender receieves the correct amount of points after each vote
