@@ -52,3 +52,32 @@ If time differences don't seem that significant, keep in mind that these are rel
 > :bulb: Remember, you can use `certoraRun --help` command to read more about the flags and the run command syntax.
 
 Upload the scripts for review.
+
+
+## Solutions
+Added corresponding scripts for each task in Lesson 05
+
+### Links to each exercise on prover.certora.com
+- Exercise 1
+https://prover.certora.com/output/48476/be29db310465ddbb142e/?anonymousKey=a9ae73eb029fbb1ffd24709cc82b5ac181514b27  
+https://prover.certora.com/output/48476/57988e113b4540b22db8/?anonymousKey=fbb6f756dafb06f5de1670024b81d3a7b4278ede  
+
+- Exercise 2
+https://prover.certora.com/output/48476/45288e354055514f2150/?anonymousKey=27d259bb5c719bd49caf9c1b0283246cc4fbb189  
+
+- Exercise 3
+https://prover.certora.com/output/48476/ecad46dafb563eaca9c0/?anonymousKey=24a8762ac7ac2a40b0c7b7c6cd6aab6282ebd8cb  
+
+- Exercise 4
+https://prover.certora.com/output/48476/f7373ae9d31300169d50/?anonymousKey=026f7b99a0240688baac552288d924d55e10f24f  
+
+### Time Comparison
+Exercise (2) : 1m 4s
+Exercise (3) : 26 s
+Exercise (4) : 29 s
+
+Exercise 3 is restricted to a single rule and a single method so it should take time strictly less than Exercise 4, which checks all functions for a single rule.
+
+Similarly, Exercise 4 is restricted to a single parametric rule compared to Exercise 2 which checks for all rules in the spec, so Exercise 4 should take time strictly less than Exercise 2.
+
+We observe the expected behavior.
