@@ -35,6 +35,7 @@ rule boundedSupply(method f) {
     uint256 supply_ = sinvoke getTotalSupply(); 
     
     assert _supply != supply_ => 
+        // @note : Not clear why < instead of <= in terms of supply_ limit
         supply_ < 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, 
         "Cannot increase to MAX_UINT256";   
 }

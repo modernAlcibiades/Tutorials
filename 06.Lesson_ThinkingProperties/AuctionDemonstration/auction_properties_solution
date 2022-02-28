@@ -39,6 +39,7 @@ Each auction has its own set of valid states as follows
   - When there are no bids, or unresolvable bids, there should be no transfers
 
 - Unit tests
+  - Closed auction cannot be bid on
   - winner address is correct (not 0 or a malicious address)
   - there is no re-entrancy in close()
   - net change in winner balance is equal to payment amount in the bid
