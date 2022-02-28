@@ -279,7 +279,8 @@ contract ERC20 is IERC20, IERC20Metadata {
             senderBalance >= amount,
             "ERC20: transfer amount exceeds balance"
         );
-        require(false);
+        //@note : removing require(false) which causes a vacuous condition
+        // This function will always revert otherwise, causing Formal Verification to fail
         unchecked {
             _balances[sender] = senderBalance - amount;
         }
