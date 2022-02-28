@@ -1,0 +1,45 @@
+Properties
+
+- Valid States
+There's two levels of valid states. 
+On higher-level, the contract with auctions mapping has its own states, though not much is evident about the states of the AuctionImpl contract.
+Each auction has its own set of valid states as follows
+    - Before auction creation : UNINITIALIZED
+      - auction[id] mapping shouldn't exist
+      - calling bid or close on id shouldn't be allowed
+    - Auction running : RUNNING
+      - Valid auction[id] with all values set to reasonable starting values
+      - Bid should be callable as long as time < end_time
+      - Close should be callable if time >= end_time
+    - Auction finished : FINISHED
+      - Prize disbursed to the winner
+      - Auction state reset
+
+- State Machine for a given `id`
+  - state[id] == UNINITIALIZED && valid newAuction called => state[id] = RUNNING
+  - state[id] == RUNNING => bid callable if time < end_time
+  - state[id] == RUNNING => close callable if time > end_time
+  - state[id] == RUNNING && valid close called => state[id] = FINISHED
+  - state[id] == FINISHED => auction closed, prize distributed
+
+- Variable transitions
+  State of auction variables for a given `id` should only change when auction is in RUNNING state, as follows
+  - uint prize : should monotonically decrease 
+  - uint payment : should stay fixed
+  - address winner : should be a valid address (fetched from env)
+  - uint bid_expiry : should stay fixed	
+  - uint end_time : should stay fixed
+  
+  Only time payment, bid_expiry, end_time change is when state moves from UNINITIALIZED to RUNNING
+
+- High-level Properties
+  - Payment should be less than (available) token supply
+  - Winner should be a valid address
+  - Auction should end if the prize value reaches 0
+  - When there are no bids, or unresolvable bids, there should be no transfers
+
+- Unit tests
+  - winner address is correct (not 0 or a malicious address)
+  - there is no re-entrancy in close()
+  - net change in winner balance is equal to payment amount in the bid
+
