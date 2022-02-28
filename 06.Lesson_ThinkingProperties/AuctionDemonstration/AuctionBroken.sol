@@ -102,6 +102,9 @@ contract AuctionImpl is TokenInterface {
 		require(auctions[id].bid_expiry != 0
 				&& (auctions[id].bid_expiry < now || 
 					auctions[id].end_time < now));
+		//@note : the newly minted amount shouldn't over max int
+		// Ideally there should be a max defined for prize
+		require(auctions[id].prize.safeAdd(getTotalSupply()) < 2**256 - 1 );
 		mint(auctions[id].winner, auctions[id].prize);
 		delete auctions[id];
 	}
