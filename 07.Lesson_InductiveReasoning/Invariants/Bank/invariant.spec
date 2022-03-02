@@ -22,6 +22,11 @@ invariant totalFunds_GE_single_user_funds()
     // Quantifiers are raising the complexity of of the run by a considerable amount, so often using them will result in a timeout
     forall address user. getTotalFunds() >= getFunds(user)
 
+invariant totalFunds_equal_single_user_funds()
+    // A quantifier is followed by a declaration of a variable to say "for all users, $exp$ should hold"
+    // Quantifiers are raising the complexity of of the run by a considerable amount, so often using them will result in a timeout
+    forall address user. getTotalFunds() == getFunds(user)
+
 /* A declaration of a ghost.
  * A ghost is, in esssence, an uninterpeted function (remember lesson 3?).
  * This ghost takes no arguments and returns a type mathint.

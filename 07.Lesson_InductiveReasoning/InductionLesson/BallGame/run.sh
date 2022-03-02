@@ -1,3 +1,5 @@
+solc-select use 0.8.6
+
 certoraRun BallGame.sol:BallGame --verify BallGame:BallGameSolution.spec \
---solc solc8.6 \
---msg "$1"
+  --send_only \
+  --msg "$1"
