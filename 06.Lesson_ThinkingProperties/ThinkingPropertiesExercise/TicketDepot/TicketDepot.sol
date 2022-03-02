@@ -97,7 +97,12 @@ contract TicketDepot {
 		return eventsMap[_eventID].ticketsRemaining;
 	}
 
-	function getTicketId(uint16 _eventID, address attendee) public view returns (uint16){
-		return eventsMap[eventID].attendees[attendee];
+	function getTicketAttendee(uint16 _eventID, uint16 _ticketID) public view returns (address){
+		return eventsMap[_eventID].attendees[_ticketID];
+	}
+
+	function getDeadline(uint16 _eventID, uint16 _ticketID) public view returns (uint256){
+		bytes32 _offerID = keccak256(abi.encode(_eventID,_ticketID));
+		return offerings[_offerID].deadline;
 	}
 } 
