@@ -4,12 +4,12 @@ methods {
 	isActiveManager(address a) returns (bool) envfree
 }
 
-
-
 rule uniqueManagerAsRule(uint256 fundId1, uint256 fundId2, method f) {
 	// assume different IDs
 	require fundId1 != fundId2;
 	// assume different managers
+	require isActiveManager(getCurrentManager(fundId1));
+	require isActiveManager(getCurrentManager(fundId2));
 	require getCurrentManager(fundId1) != getCurrentManager(fundId2);
 	
 	// hint: add additional variables just to look at the current state
@@ -22,6 +22,10 @@ rule uniqueManagerAsRule(uint256 fundId1, uint256 fundId2, method f) {
 	// verify that the managers are still different 
 	assert getCurrentManager(fundId1) != getCurrentManager(fundId2), "managers not different";
 }
+
+// @note : Created a relevant invariant but addresss(0) causes syntax error
+// invariant fundManagerIsActive(uint256 fundId)
+// 	getCurrentManager(fundId1) != address(0) <=> isActiveManager(getCurrentManager(fundId1))
 
 
 // /* A version of uniqueManagerAsRule as an invariant */
