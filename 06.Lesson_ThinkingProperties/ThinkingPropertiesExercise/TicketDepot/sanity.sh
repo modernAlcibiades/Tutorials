@@ -1,2 +1,5 @@
+solc-select use 0.6.12
+
 certoraRun TicketDepot.sol --verify TicketDepot:sanity.spec \
---solc solc6.12
+--send_only \
+--msg "$1"

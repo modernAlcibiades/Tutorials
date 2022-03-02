@@ -88,4 +88,16 @@ contract TicketDepot {
 			delete offerings[offerID];  
 	} 
 
+	// @note : Certora support functions
+	function getNumEvents() public view returns (uint16){
+		return numEvents;
+	}
+
+	function getTicketsRemaining(uint16 _eventID) public view returns (uint16){
+		return eventsMap[_eventID].ticketsRemaining;
+	}
+
+	function getTicketId(uint16 _eventID, address attendee) public view returns (uint16){
+		return eventsMap[eventID].attendees[attendee];
+	}
 } 
