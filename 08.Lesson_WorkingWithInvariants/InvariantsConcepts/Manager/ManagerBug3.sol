@@ -18,7 +18,9 @@ contract Manager {
 
 
 	function createFund(uint256 fundId) public {
-		// require(msg.sender != address(0));
+		// @note : msg.sender shouldn't be 0 in EVM
+		// But 0 address check is a standard procedure
+		require(msg.sender != address(0));
 		require(funds[fundId].currentManager == address(0));
 		require(!isActiveManager[msg.sender]);
 		funds[fundId].currentManager = msg.sender;
