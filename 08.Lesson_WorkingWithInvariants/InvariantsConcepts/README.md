@@ -308,3 +308,9 @@ invariant example(bytes32 hashId, env e)
 - [ ] If you're able to think of additional interesting properties implement them as well. 
 
 Upload your solutions for review by the Certora Team.
+
+Update : ReserveList
+- The ReserveListFixed.sol contract doesn't match the specified properties above. Total three invariants were defined, and each of them fails in a different condition, as follows
+  - `noTokenAtGreaterThanReserveCount` : Fails for removeReserve(address) since the function only deletes tokens at arbitrary index, and reduces reserveCount. When starting with valid state with valid tokens at all i < reserveCount, and removing index j< reserveCount - 1, the reserve count will be reduced and i == reserveCount-1 now violates the invariant
+  - `listsCorrelated` : When a token is removed, the `reserves[token]` still points to its old `id`, but `underlyingLists[id]` is 0. Furthermore, if `token2` is then added, `id` will point to `token2` but `token != token2`
+  - `injectiveIds` : Similar to `listsCorrelated`, a `removeReserve` followed by `addReserve` will results in distinct tokens having the same ids
