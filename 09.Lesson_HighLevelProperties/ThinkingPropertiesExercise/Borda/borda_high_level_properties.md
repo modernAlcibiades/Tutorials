@@ -11,29 +11,30 @@
 
 - State Transitions
   - Voter States
-    - `Uninitialized` : on `registerVoter` => `NotVoted`
-    - `NotVoted` : if `hasVoted` ie on valid vote => `Voted`
-    - `NotVoted` or `Voted` : too many vote_attempts => `Blacklisted`
+    - (medium)`Uninitialized` : on `registerVoter` => `NotVoted`
+    - (high)`NotVoted` : if `hasVoted` ie on valid vote => `Voted`
+    - (low)`NotVoted` or `Voted` : too many vote_attempts => `Blacklisted`
   - Contender States
-    - `Not Started` : 0x0
-    - `Address_i, points_i`: on `voteTo(Address_j, points)` && `points_i < points_j` => `Address_j, points_j`
+    - (low)`Not Started` : 0x0
+    - (high)`Address_i, points_i`: on `voteTo(Address_j, points)` && `points_i < points_j` => `Address_j, points_j`
 
 - Variable Transitions
-  - `pointsOfWinner` should increase monotonically
-  - `vote_attempts` should increase monotonically
-  - `black_listed`, `voted`, `registered` cannot be altered once set to  `true`
+  - (high)`pointsOfWinner` should increase monotonically
+  - (high)`vote_attempts` should increase monotonically
+  - (high)`black_listed`, `voted`, `registered` cannot be altered once set to  `true`
   
   
 - High-level properties
-  - One address, one vote
-  - Vote cannot be changed
-  - Blacklisted voters shouldn't be able to vote
-  - Only registered Contenders and registered Voters should be able to participate in their respective roles
-  - Winner should have the most number of votes. If there is are multiple contenders with same amount of votes, first one to achieve that amount of votes should be the winner.
-  - Each unique voter should have a unique id, and each id should correspond to a different (unique) voter
-  - Each unique contender should have a unique id, and each id should correspond to a different (unique) contender.
+  - (high) One address, one vote
+  - (high) Vote cannot be changed
+  - (low) Blacklisted voters shouldn't be able to vote
+  - (low) Only registered Contenders and registered Voters should be able to participate in their respective roles
+  - (high) Winner should have the most number of votes. 
+  - (low) If there is are multiple contenders with same amount of votes, first one to achieve that amount of votes should be the winner.
+  - (medium) Each unique voter should have a unique id, and each id should correspond to a different (unique) voter
+  - (medium) Each unique contender should have a unique id, and each id should correspond to a different (unique) contender.
 
 - Unit Tests
-  - for all addresses a, `pointsOfWinner >= _contenders[a].points`
+  - (high) for all addresses a, `pointsOfWinner >= _contenders[a].points`
   
   
