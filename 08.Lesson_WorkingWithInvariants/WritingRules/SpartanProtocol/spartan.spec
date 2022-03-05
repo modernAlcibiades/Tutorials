@@ -64,7 +64,7 @@ invariant nonZeroTokenRatio()
     }
 
 invariant nonZeroTotal()
-    totalValue() >0 <=> t0()*t1() > 0
+    totalValue() >0 => k>0
     {
         preserved with(env e){
             sync();
@@ -115,8 +115,8 @@ rule withdrawAllLiquidityCorrect(){
     env e;
     uint256 balance = balanceOf(e.msg.sender);
     sync();
-    require(totalValue() > 0);
     uint256 previous_t0 = t0();
+    require(previous_t0 > 0);
     //uint256 previous_t1 = t1();
     remove_liquidity(e, balance);
     uint256 new_balance = balanceOf(e.msg.sender);
@@ -140,7 +140,7 @@ rule noReductionInFunds(method f){
     sync();
     uint256 after0 = t0();
     //uint256 after1 = t1();
-    assert(before0 == after0);
+    assert(before0 <= after0);
     //assert(before1 == after1);
 }
 
