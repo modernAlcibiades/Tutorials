@@ -2,6 +2,7 @@ methods {
 		getCurrentManager(uint256 fundId) returns (address) envfree
 		getPendingManager(uint256 fundId) returns (address) envfree
 		isActiveManager(address a) returns (bool) envfree
+		flipOwnership(uint256, uint256) envfree
 }
 
 invariant ManagerZeroIsNotActive()
@@ -20,8 +21,9 @@ rule uniqueManager(uint256 fundId1, uint256 fundId2, method f) {
 		uint256 id;
 		require id == fundId1 || id == fundId2;
 		claimManagement(e, id);  
-	}
-	else {
+	} else if (f.selector == flipOwnership(uint256, uint256).selector){
+		flipOwnership(fundId1, fundId2);
+	} else {
 		calldataarg args;
 		f(e,args);
 	}

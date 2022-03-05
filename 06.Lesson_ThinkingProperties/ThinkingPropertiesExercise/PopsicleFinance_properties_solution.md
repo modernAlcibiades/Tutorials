@@ -19,6 +19,7 @@
   - (high) `totalFeesEarnedPerShare` increases monotonically
   - (medium) `Inactive` => Reward can only decrease (to 0)
   - (high) `feesCollectedPerShare` increases monotonically
+  - (high) only accrue functions should increase reward
 
 - High-level properties
   - (high) ERC20 properties should hold for balances
