@@ -64,7 +64,7 @@ invariant nonZeroTokenRatio()
     }
 
 invariant nonZeroTotal()
-    totalValue() >0 => k>0
+    totalValue() >0 => kValue()>0
     {
         preserved with(env e){
             sync();
