@@ -121,7 +121,7 @@ rule withdrawAllLiquidityCorrect(){
     remove_liquidity(e, balance);
     uint256 new_balance = balanceOf(e.msg.sender);
     sync();
-    assert(new_balance == 0 && (t0()/previous_t0 == totalValue() + balance/ totalValue()), "Token0 balance incorrect");
+    assert(new_balance == 0 && (t0()/previous_t0 == totalValue()/ (totalValue()+balance)), "Token0 balance incorrect");
     //assert(previous_t1/(t0() + previous_t1) == balance/ totalValue(), "Token1 balance incorrect");
 }
 
