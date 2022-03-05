@@ -67,7 +67,7 @@ contract SpartaProtocolPool is ERC20 {
 
     // removes liqudity from a pool
     function remove_liquidity(uint LP_tokens) public {
-        // sync();      // add sync() here to solve the bug
+        sync();      // add sync() here to solve the bug
         burn(msg.sender, LP_tokens);
         uint LP_total_supply = total;
         K = K * LP_total_supply / (LP_total_supply + LP_tokens);
@@ -142,6 +142,6 @@ contract SpartaProtocolPool is ERC20 {
         // transfer liquidity token to user
         IERC20(token0).transfer(user, pay_in_0);
         IERC20(token1).transfer(user, pay_in_1);
-    }    
+    }
     
 }

@@ -23,6 +23,7 @@
 - Variable Transitions
   - totalSupply increases => add_liquidity was called
   - totalSupply decreases => remove_liquidity was called
+  - Ratio of token0 to token1 can only be changed at mint (ie add liquidity)
 
 - High-level properties
   - (high) The token balances in the pool
