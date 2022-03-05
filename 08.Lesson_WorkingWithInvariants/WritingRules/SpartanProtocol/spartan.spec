@@ -117,13 +117,12 @@ rule withdrawAllLiquidityCorrect(){
     sync();
     require(totalValue() > 0);
     uint256 previous_t0 = t0();
-    uint256 previous_t1 = t1();
+    //uint256 previous_t1 = t1();
     remove_liquidity(e, balance);
     uint256 new_balance = balanceOf(e.msg.sender);
-    assert(new_balance == 0, "User liquidity removed completely");
     sync();
-    assert(previous_t0/(t0() + previous_t0) == balance/ totalValue(), "Token0 balance incorrect");
-    assert(previous_t1/(t0() + previous_t1) == balance/ totalValue(), "Token1 balance incorrect");
+    assert(new_balance == 0 && (t0()/previous_t0 == totalValue() + balance/ totalValue()), "Token0 balance incorrect");
+    //assert(previous_t1/(t0() + previous_t1) == balance/ totalValue(), "Token1 balance incorrect");
 }
 
 // Protocol didn't lose funds to external users
@@ -132,15 +131,17 @@ rule noReductionInFunds(method f){
     env e;
     require(currentContract != e.msg.sender);
     require(allowance(currentContract, e.msg.sender) == 0);
+    require(totalValue() > 0);
+    sync();
     uint256 before0 = t0();
-    uint256 before1 = t1();
+    ///uint256 before1 = t1();
     calldataarg args;
     f(e, args);
     sync();
     uint256 after0 = t0();
-    uint256 after1 = t1();
+    //uint256 after1 = t1();
     assert(before0 == after0);
-    assert(before1 == after1);
+    //assert(before1 == after1);
 }
 
 // Token ratios only change on swap, transfer, or add_liquidity
@@ -148,6 +149,7 @@ rule userTakesProportionalAmount(method f){
     env e;
     require(currentContract != e.msg.sender);
     require(allowance(currentContract, e.msg.sender) == 0);
+    require(totalValue() > 0);
     sync();
     uint256 before0 = t0();
     uint256 before1 = t1();
