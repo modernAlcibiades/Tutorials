@@ -22,8 +22,9 @@
 - High-level Properties
   - (high) Only user and anyone approved by user should be able to withdraw funds from user's account
   - (medium) User should be able to revoke allowance
-  - (high) User can only transfer amount less than their balance
-  - (high) Sender balance + Recipient balance should stay fixed across operations
+  - (high) Only user can increase or decrease allowance on their balance
+  - (high) Transfer shouldn't affect balance of other users
+  - (high) Sum of user balances should equal total supply
   - (low) Approval for spending should have time limits
   
 - Unit Tests

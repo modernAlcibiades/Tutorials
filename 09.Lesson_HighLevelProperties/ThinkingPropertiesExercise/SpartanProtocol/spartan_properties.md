@@ -21,10 +21,8 @@
   - Other functions maintain the states
   
 - Variable Transitions
-  - `token0Amount` == 0 if `Uninitialized`, >0 otherwise
-  - `token1Amount` == 0 if `Uninitialized`, >0 otherwise
-  - `total_supply >0` <=> `token0amount > 0` <=> `token1amount > 0`
-  - `total_supply ==0` <=> `token0amount == 0` <=> `token1amount == 0`
+  - totalSupply increases => add_liquidity was called
+  - totalSupply decreases => remove_liquidity was called
 
 - High-level properties
   - (high) The token balances in the pool
@@ -35,6 +33,8 @@
   - (high) If user added liquidity in the pool, they should be able to remove proportional amount of liquidity
   
 - Unit Tests
-  - 
+  - `K == (token0amount * token1amount * 100000/total)`
+  - `total_supply >0` <=> `token0amount > 0` <=> `token1amount > 0`
+  - `total_supply ==0` <=> `token0amount == 0` <=> `token1amount == 0`
 
   

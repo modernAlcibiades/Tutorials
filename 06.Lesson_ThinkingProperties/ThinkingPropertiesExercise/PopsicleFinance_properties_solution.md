@@ -24,7 +24,7 @@
   - (high) ERC20 properties should hold for balances
   - (high) There shouldn't be any fees/rewards while `Inactive`
   - (high) Cannot withdraw more than deposits
-  - (high)  Collected fees shouldn't be negative ie `totalFeesEarnedPerShare >= feesCollectedPerShare` for all users
+  - (high) Collected fees shouldn't be negative ie `totalFeesEarnedPerShare >= feesCollectedPerShare` for all users
   - (high) Only msg.sender action can change their balance
   
 - Unit tests
