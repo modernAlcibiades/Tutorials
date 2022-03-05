@@ -7,7 +7,7 @@ function getVoterAge(env e, address voter) returns uint8{
 }
 
 function getVoterRegistered(env e, address voter) returns bool{
-    uint256 age; bool voterReg; bool voted; uint256 vote_attempts; bool blocked;
+    uint8 age; bool voterReg; bool voted; uint256 vote_attempts; bool blocked;
     age, voterReg, voted, vote_attempts, blocked = getFullVoterDetails(e, voter);
     return voterReg;
 }
