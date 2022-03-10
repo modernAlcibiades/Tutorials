@@ -8,5 +8,5 @@ methods {
     startMeeting(uint256) 
     cancelMeeting(uint256)
     endMeeting(uint256)
-    joinMeeting(uint256)
+    joinMeeting(uint256) envfree
 }

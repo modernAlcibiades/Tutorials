@@ -1,8 +1,6 @@
-
-
 function getVoterAge(env e, address voter) returns uint8{
-    uint8 age;
-    age, _, _, _, _ = getFullVoterDetails(e, voter);
+    uint8 age; bool voterReg; bool voted; uint256 vote_attempts; bool blocked;
+    age, voterReg, voted, vote_attempts, blocked = getFullVoterDetails(e, voter);
     return age;
 }
 
@@ -13,22 +11,25 @@ function getVoterRegistered(env e, address voter) returns bool{
 }
 
 function getVoterVoted(env e, address voter) returns bool{
-    bool voted;
-    _, _, voted, _, _ = getFullVoterDetails(e, voter);
+    uint8 age; bool voterReg; bool voted; uint256 vote_attempts; bool blocked;
+    age, voterReg, voted, vote_attempts, blocked = getFullVoterDetails(e, voter);
     return voted;
 }
 
-function getVoterVoteAttempts(env e, address voter) returns uint256{
-    uint256 vote_attempts;
-    _, _, _, vote_attempts, _ = getFullVoterDetails(e, voter);
+function getVoterAttempts(env e, address voter) returns uint256{
+    uint8 age; bool voterReg; bool voted; uint256 vote_attempts; bool blocked;
+    age, voterReg, voted, vote_attempts, blocked = getFullVoterDetails(e, voter);
     return vote_attempts;
 }
 
 function getVoterBlocked(env e, address voter) returns bool{
-    bool blocked;
-    _, _, _, _, blocked = getFullVoterDetails(e, voter);
+    uint8 age; bool voterReg; bool voted; uint256 vote_attempts; bool blocked;
+    age, voterReg, voted, vote_attempts, blocked = getFullVoterDetails(e, voter);
     return blocked;
 }
+
+// Definitions
+
 
 // Checks that a voter's "registered" mark is changed correctly - 
 // If it's false after a call, it was false before
