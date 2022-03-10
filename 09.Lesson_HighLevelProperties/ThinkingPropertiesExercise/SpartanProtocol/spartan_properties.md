@@ -34,7 +34,6 @@
   - (high) If user added liquidity in the pool, they should be able to remove proportional amount of liquidity
   
 - Unit Tests
-  - `K == (token0amount * token1amount * 100000/total)`
   - `total_supply >0` <=> `token0amount > 0` <=> `token1amount > 0`
   - `total_supply ==0` <=> `token0amount == 0` <=> `token1amount == 0`
 
