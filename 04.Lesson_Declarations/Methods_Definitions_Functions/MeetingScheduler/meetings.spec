@@ -28,19 +28,36 @@ methods {
 }
 
 
-definition meetingUnitialized(uint256 meetingId) returns bool =
-	getStartTimeById(meetingId) == 0 && getEndTimeById(meetingId) == 0 && getStateById(meetingId) == 0;
+definition meetingUnitialized(env e, uint256 meetingId) returns bool =
+	getStartTimeById(meetingId) == 0 
+	&& getEndTimeById(meetingId) == 0 
+	&& getStateById(meetingId) == 0
+	;
 
-definition meetingPending(uint256 meetingId) returns bool =
-	getStartTimeById(meetingId) != 0 && getEndTimeById(meetingId) != 0 && getStateById(meetingId) == 1 && getNumOfParticipents(meetingId) == 0;
+definition meetingPending(env e, uint256 meetingId) returns bool =
+	getStartTimeById(meetingId) != 0 
+	&& getEndTimeById(meetingId) != 0 
+	&& getStateById(meetingId) == 1 
+	&& getNumOfParticipents(meetingId) == 0
+	;
 
-definition meetingStarted(uint256 meetingId) returns bool =
-	getStartTimeById(meetingId) != 0 && getEndTimeById(meetingId) != 0 && getStateById(meetingId) == 2;
+definition meetingStarted(env e, uint256 meetingId) returns bool =
+	getStartTimeById(meetingId) != 0 
+	&& getEndTimeById(meetingId) != 0 
+	&& getStateById(meetingId) == 2
+	&& e.block.timestamp >= getStartTimeById(meetingId)
+	;
 
-definition meetingEnded(uint256 meetingId) returns bool =
-	getStartTimeById(meetingId) != 0 && getEndTimeById(meetingId) != 0 && getStateById(meetingId) == 3;
+definition meetingEnded(env e, uint256 meetingId) returns bool =
+	getStartTimeById(meetingId) != 0 
+	&& getEndTimeById(meetingId) != 0 
+	&& getStateById(meetingId) == 3
+	&& e.block.timestamp >= getEndTimeById(meetingId)
+	;
 
-definition meetingCancelled(uint256 meetingId) returns bool = getStateById(meetingId) == 4;
+definition meetingCancelled(env e, uint256 meetingId) returns bool = 
+getStateById(meetingId) == 4
+;
 
 // Checks that when a meeting is created, the planned end time is greater than the start time
 rule startBeforeEnd(method f, uint256 meetingId, uint256 startTime, uint256 endTime) {
@@ -74,7 +91,7 @@ rule startOnTime(method f, uint256 meetingId) {
 rule checkStartedToStateTransition(method f, uint256 meetingId) {
 	env e;
 	calldataarg args;
-	require(meetingStarted(meetingId));
+	require(meetingStarted(e, meetingId));
 	f(e, args);
     uint8 stateAfter = getStateById(meetingId);
 	
@@ -89,7 +106,7 @@ rule checkStartedToStateTransition(method f, uint256 meetingId) {
 rule checkPendingToCancelledOrStarted(method f, uint256 meetingId) {
 	env e;
 	calldataarg args;
-	require(meetingPending(meetingId));
+	require(meetingPending(e, meetingId));
 	f(e, args);
     uint8 stateAfter = getStateById(meetingId);
 	
@@ -101,7 +118,7 @@ rule checkPendingToCancelledOrStarted(method f, uint256 meetingId) {
 rule checkCancelledOrFinished(method f, uint256 meetingId) {
 	env e;
 	calldataarg args;
-	require(meetingCancelled(meetingId) || meetingEnded(meetingId));
+	require(meetingCancelled(e, meetingId) || meetingEnded(e, meetingId));
 	uint8 stateBefore = getStateById(meetingId);
 	f(e, args);
     uint8 stateAfter = getStateById(meetingId);

@@ -47,10 +47,34 @@ function getVoterBlocked(address voter) returns bool{
 }
 
 // Definitions
-definition unRegisteredVoter(address voter) returns bool = !getVoterRegistered(voter);
-definition registeredYetVotedVoter(address voter) returns bool = getVoterRegistered(voter) && !getVoterVoted(voter);
-definition legitRegisteredVotedVoter(address voter) returns bool = getVoterRegistered(voter) && getVoterVoted(voter) && !getVoterBlocked(voter); 
-definition blockedVoter(address voter) returns bool = getVoterRegistered(voter) && getVoterVoted(voter) && getVoterBlocked(voter); 
+definition unRegisteredVoter(address voter) returns bool = 
+!getVoterRegistered(voter) &&
+!getVoterVoted(voter) &&
+!getVoterBlocked(voter) &&
+getVoterAge(voter) == 0 &&
+getVoterAttempts(voter) == 0
+;
+
+definition registeredYetVotedVoter(address voter) returns bool = 
+getVoterRegistered(voter) 
+&& !getVoterVoted(voter)
+&& getVoterAttempts(voter) == 0
+&& !getVoterBlocked(voter)
+;
+
+definition legitRegisteredVotedVoter(address voter) returns bool = 
+getVoterRegistered(voter) 
+&& getVoterVoted(voter) 
+&& getVoterAttempts(voter) > 0 && getVoterAttempts(voter) < 3
+&& !getVoterBlocked(voter)
+; 
+
+definition blockedVoter(address voter) returns bool = 
+getVoterRegistered(voter) 
+&& getVoterVoted(voter) 
+&& getVoterAttempts(voter) >= 3
+&& getVoterBlocked(voter)
+; 
 
 // Checks that a voter's "registered" mark is changed correctly - 
 // If it's false after a call, it was false before
